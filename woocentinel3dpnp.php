@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: MAJObytes Centinel 3D Secure
- * Plugin URI: http://www.majobytes.com
+ * Plugin URI: http://www.majobytes.com/
  * Description: WooCommerce Plugin for using Centinel 3D Secure and Plug'n Pay.
  * Version: 1.1
  * Author: MAJObytes
@@ -433,9 +433,10 @@
 				}	
 				$centinelClient->add('OrderDescription', $product_description);
 				$centinelClient->add('Amount', round($order->order_total*100));				
-				$centinelClient->add('CurrencyCode', getCurrencyCode($order->get_order_currency()));
+				$centinelClient->add('CurrencyCode', $this->getCurrencyCode($order->get_order_currency()));
 				//$centinelClient->add('CurrencyCode', "388"); //TODO: fix. 388 is for Jamaican Dollars
 				error_log("Order Currency: ".$order->get_order_currency(),0);
+				error_log("Order Currency: ".$this->getCurrencyCode($order->get_order_currency()),0);
 				$centinelClient->add('OrderChannel', "PRODUCT"); //TODO: fix
 				$centinelClient->add('ProductCode', "PHY"); //TODO: fix
 				$centinelClient->add('TransactionMode', "S"); 
@@ -471,7 +472,7 @@
 						$item_loop++;
 						$centinelClient->add('Item_Name_'.$item_loop, $item['name']);
 						//$centinelClient->add('Item_SKU_'.$item_loop, $product->get_sku());
-						error_log("Product SKU: ".$product->get_sku(), 0);
+						//error_log("Product SKU: ".$product->get_sku(), 0);
 						$centinelClient->add('Item_Price_'.$item_loop, number_format( ($order->get_item_total( $item, true, true ) * 100 ), 2, '.', '' ));
 						$centinelClient->add('Item_Quantity_'.$item_loop, $item['qty']);
 						$centinelClient->add('Item_Desc_'.$item_loop, $item['name']);
@@ -693,7 +694,9 @@
 			}
 			
 			private function getCurrencyCode($key = 'JMD'){
-				$currencyArray = array(
+				//abc used as some sites use abc for jamaican
+				$currencyArray=array(
+					'ABC'=>'388',
 					'JMD'=>'388',
 					'USD'=>'840',
 					'AUD'=>'036',
@@ -717,8 +720,8 @@
 				
 				$currencyValue = $currencyArray[$key];
 				
-				error_log("Currency Value of ".$key." is ".$currencyValue,0);
-				return currencyValue;
+				//error_log("Currency Value of ".$key." is ".$currencyValue,0);
+				return $currencyValue;
 			}
 			
 			function get_woo_version() {
