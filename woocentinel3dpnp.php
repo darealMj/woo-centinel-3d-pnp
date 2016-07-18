@@ -63,10 +63,12 @@
 			public function check_response(){
 				error_log("GET THERE", 0);
 				error_log($_POST , 0);
-				wp_die();
+				
+				$this->auth_3dsecure();			
 			}
 			
 			function receipt_page( $order ){			
+				error_log("Receipt Page",0);
 				echo '<p>' . __('Thank you for your purchase, please click below to pay via Centinel .', 'woocommerce').'</p>';
 				echo $this->handle_3dsecure( );
 			}
@@ -75,6 +77,7 @@
 			 *Handle creation of form to POST to 3D Secure server			 
 			 */			
 			public function handle_3dsecure(){
+				error_log("Handle_3DSecure",0);
 				if ( ! empty( $_GET['acs'] ) ) {
 					$order_id = wc_clean( $_GET['acs'] );
 					$acsurl   = WC()->session->get( 'Centinel_ACSUrl' );
@@ -243,7 +246,7 @@
 				global $woocommerce;
 				//error_log("Reached validate fields function!", 0);
 				//Check if Credit Card Number is valid
-				if (!$this->isCreditCardNumber($_POST['c3d_card_number'])){					/*error_log("(Credit Card Number) is not valid.", 0);*/
+				if (!$this->isCreditCardNumber($_POST['c3d_card_number'])){
 					if( $this->woo_version >= 2.1 ){						
 						wc_add_notice( __('(Credit Card Number) is not valid.', 'centinel_pnp_majobytes'), $notice_type = 'error' );		
 					}else if( $woo_version < 2.1 ){						
